@@ -1,3 +1,4 @@
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 import uuid
@@ -51,6 +52,13 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await update.message.reply_text(f'Here is your link: {link}')
 
 async def show_dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user_id = update.message.from_user.id
+
+    # Check if the sender is an admin
+    if user_id not in ADMIN_USER_IDS:
+        await update.message.reply_text("Sorry, only admins can access the dashboard.")
+        return
+
     keyboard = [
         [InlineKeyboardButton("مشاهده یوزر ها", callback_data='glass_button_users')],
         [InlineKeyboardButton("Glass Button 2", callback_data='glass_button_2')],
@@ -80,7 +88,7 @@ async def handle_glass_button_2(update: Update, context: ContextTypes.DEFAULT_TY
     await query.answer()
     await query.edit_message_text(text="You pressed Glass Button 2!")
 
-async def handle_glass_button_3(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_glass_button_3(update: Update, context: ContextTypes.DEFAULT_TYPE) A-> None:
     query = update.callback_query
     await query.answer()
     await query.edit_message_text(text="You pressed Glass Button 3!")
